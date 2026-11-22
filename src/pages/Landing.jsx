@@ -5,7 +5,7 @@ import { CROPS, PRICE_INSIGHTS } from '../data/seed.js';
 import { IMAGES } from '../data/images.js';
 import { cx, perUnit } from '../lib/format.js';
 
-/* Public marketing landing page for FarmLine. */
+/* Public pre-launch landing page for FarmLine, built around the waitlist. */
 
 const NAV = [
   ['How it works', '#how'],
@@ -27,7 +27,7 @@ function Logo({ light = false }) {
   );
 }
 
-function TopNav() {
+function TopNav({ onJoin }) {
   const [open, setOpen] = useState(false);
   const { hash } = useLocation();
   useEffect(() => {
@@ -50,12 +50,12 @@ function TopNav() {
           ))}
         </nav>
         <div className="ml-auto hidden sm:flex items-center gap-2">
-          <Link to="/buyer/login" className="btn-ghost px-4 h-11 text-label-lg">
-            Buyer log in
+          <Link to="/screens" className="btn-ghost px-4 h-11 text-label-lg">
+            Preview the app
           </Link>
-          <Link to="/farmer/splash" className="btn-primary px-5 h-11">
-            Start selling
-          </Link>
+          <button type="button" onClick={() => onJoin()} className="btn-primary px-5 h-11">
+            Join the waitlist
+          </button>
         </div>
         <button
           type="button"
@@ -77,12 +77,19 @@ function TopNav() {
               </a>
             ))}
             <div className="grid grid-cols-2 gap-2 pt-2 sm:hidden">
-              <Link to="/buyer/login" className="btn-ghost h-12 text-label-lg">
-                Buyer log in
+              <Link to="/screens" className="btn-ghost h-12 text-label-lg">
+                Preview app
               </Link>
-              <Link to="/farmer/splash" className="btn-primary h-12">
-                Start selling
-              </Link>
+              <button
+                type="button"
+                onClick={() => {
+                  setOpen(false);
+                  onJoin();
+                }}
+                className="btn-primary h-12"
+              >
+                Join waitlist
+              </button>
             </div>
           </nav>
         </div>
@@ -160,12 +167,12 @@ function HeroPhone() {
   );
 }
 
-function Hero() {
+function Hero({ onJoin }) {
   return (
     <section className="max-w-6xl mx-auto px-4 sm:px-8 pt-8 sm:pt-14 pb-12 grid lg:grid-cols-[1.1fr_1fr] gap-10 lg:gap-6 items-center">
       <div className="flex flex-col gap-6 animate-surface-enter">
         <span className="badge self-start bg-surface-card text-primary clay-card px-4 py-2 text-label-md">
-          <Icon name="location_on" size={16} /> Made for Namibian farms
+          <span className="w-2 h-2 rounded-full bg-accent" /> Coming soon to Namibian farms
         </span>
         <h1 className="font-display text-[38px] leading-[44px] sm:text-[52px] sm:leading-[58px] font-extrabold tracking-[-0.75px] text-primary text-balance">
           Sell your harvest before it leaves the field.
@@ -174,18 +181,16 @@ function Hero() {
           FarmLine connects smallholder farmers with supermarkets, hotels and traders. List your produce in the app or by SMS. An agent collects and grades it at your farm, and you are paid straight to your mobile wallet.
         </p>
         <div className="flex flex-col sm:flex-row gap-3">
-          <Link to="/farmer/splash" className="btn-primary h-14 px-7 text-[16px]">
-            <Icon name="agriculture" size={22} /> I’m a farmer
-          </Link>
-          <Link to="/buyer/signup" className="btn-outline h-14 px-7 text-[16px]">
-            <Icon name="storefront" size={22} /> I’m a buyer
-          </Link>
+          <button type="button" onClick={() => onJoin('farmer')} className="btn-primary h-14 px-7 text-[16px]">
+            <Icon name="agriculture" size={22} /> Join as a farmer
+          </button>
+          <button type="button" onClick={() => onJoin('buyer')} className="btn-outline h-14 px-7 text-[16px]">
+            <Icon name="storefront" size={22} /> Join as a buyer
+          </button>
         </div>
         <p className="font-body text-label-md text-on-surface-variant flex items-center gap-2">
           <Icon name="sms" size={18} className="text-primary" />
-          <span>
-            No smartphone? Text <strong className="text-primary">SELL</strong> to <strong className="text-primary tabular-nums">12345</strong>.
-          </span>
+          <span>Free for farmers. Works on any phone, even without data.</span>
         </p>
       </div>
       <HeroPhone />
@@ -194,15 +199,15 @@ function Hero() {
 }
 
 const STATS = [
-  ['1,240', 'farmers selling'],
-  ['32', 'field agents'],
-  ['N$412,000', 'paid out to farmers'],
+  ['Free', 'for farmers to list'],
+  ['Any phone', 'app or SMS, no data needed'],
   ['7', 'languages, incl. Oshiwambo'],
+  ['Same day', 'payment after the quality check'],
 ];
 
 function Stats() {
   return (
-    <section aria-label="FarmLine in numbers" className="max-w-6xl mx-auto px-4 sm:px-8">
+    <section aria-label="What FarmLine offers" className="max-w-6xl mx-auto px-4 sm:px-8">
       <div className="clay-card bg-surface-card rounded-2xl grid grid-cols-2 lg:grid-cols-4">
         {STATS.map(([value, label], i) => (
           <div
@@ -283,7 +288,7 @@ const SMS_THREAD = [
   ['in', 'Paid N$1,950 to your wallet for 195kg Grade A. Ref FL-PAY-88213.'],
 ];
 
-function Farmers() {
+function Farmers({ onJoin }) {
   return (
     <section id="farmers" className="scroll-mt-24 max-w-6xl mx-auto px-4 sm:px-8 pb-16 sm:pb-24 grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
       <div className="flex flex-col gap-6">
@@ -308,11 +313,11 @@ function Farmers() {
           ))}
         </ul>
         <div className="flex flex-wrap gap-3">
-          <Link to="/farmer/splash" className="btn-primary h-12 px-6">
-            Open the farmer app <Icon name="arrow_forward" size={20} />
-          </Link>
-          <Link to="/farmer/help" className="btn-ghost h-12 px-5 text-label-lg">
-            <Icon name="sms" size={20} /> SMS guide
+          <button type="button" onClick={() => onJoin('farmer')} className="btn-primary h-12 px-6">
+            Join as a farmer <Icon name="arrow_forward" size={20} />
+          </button>
+          <Link to="/farmer/splash" className="btn-ghost h-12 px-5 text-label-lg">
+            <Icon name="smartphone" size={20} /> Preview the farmer app
           </Link>
         </div>
       </div>
@@ -347,7 +352,7 @@ function Farmers() {
   );
 }
 
-function Buyers() {
+function Buyers({ onJoin }) {
   return (
     <section id="buyers" className="scroll-mt-24 bg-primary">
       <div className="max-w-6xl mx-auto px-4 sm:px-8 py-16 sm:py-24 grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
@@ -372,11 +377,15 @@ function Buyers() {
             ))}
           </ul>
           <div className="flex flex-wrap gap-3">
-            <Link to="/buyer/signup" className="press clay-btn-secondary bg-accent text-on-accent rounded-full h-12 px-6 inline-flex items-center gap-2 font-label text-label-lg">
-              Create a buyer account <Icon name="arrow_forward" size={20} />
-            </Link>
-            <Link to="/buyer/marketplace" className="press rounded-full h-12 px-6 inline-flex items-center gap-2 font-label text-label-lg text-on-primary border-2 border-on-primary/40 hover:border-on-primary">
-              Browse the marketplace
+            <button
+              type="button"
+              onClick={() => onJoin('buyer')}
+              className="press clay-btn-secondary bg-accent text-on-accent rounded-full h-12 px-6 inline-flex items-center gap-2 font-label text-label-lg"
+            >
+              Join as a buyer <Icon name="arrow_forward" size={20} />
+            </button>
+            <Link to="/buyer" className="press rounded-full h-12 px-6 inline-flex items-center gap-2 font-label text-label-lg text-on-primary border-2 border-on-primary/40 hover:border-on-primary">
+              Preview the buyer portal
             </Link>
           </div>
         </div>
@@ -436,10 +445,10 @@ function Prices() {
         <SectionHead
           eyebrow="Market prices"
           title="Know the price before you plant"
-          body="Average prices paid on FarmLine over the last 12 weeks."
+          body="Every week, farmers get prices like these for their crops, with tips on when to sell and plant."
         />
         <Link to="/farmer/prices" className="btn-ghost h-11 px-5 text-label-lg self-start sm:self-auto shrink-0">
-          All price insights <Icon name="arrow_forward" size={18} />
+          Preview price insights <Icon name="arrow_forward" size={18} />
         </Link>
       </div>
       <div className="grid md:grid-cols-3 gap-5">
@@ -476,26 +485,72 @@ function Prices() {
   );
 }
 
-function Testimonial() {
+// Waitlist form lives in Typeform (FarmLine workspace). Responses: admin.typeform.com.
+const TYPEFORM_ID = 'YGOzE7WV';
+const typeformUrl = (source) => `https://form.typeform.com/to/${TYPEFORM_ID}#source=${encodeURIComponent(source)}`;
+
+function Waitlist() {
+  const [loaded, setLoaded] = useState(false);
+
   return (
-    <section className="max-w-6xl mx-auto px-4 sm:px-8 pb-16 sm:pb-24">
-      <figure className="clay-card bg-accent-container rounded-2xl p-7 sm:p-12 grid md:grid-cols-[auto_1fr] gap-6 md:gap-10 items-center">
-        <Img src={IMAGES.maria} alt="Maria Nangolo" fallbackIcon="person" className="w-24 h-24 sm:w-32 sm:h-32 rounded-full object-cover text-[36px] clay-card" />
-        <div className="flex flex-col gap-4">
-          <Icon name="format_quote" size={40} className="text-accent-text" />
-          <blockquote className="font-headline text-headline-md sm:text-headline-lg text-on-accent-container text-pretty">
-            Before, I waited for a trader to drive past and take whatever price he said. Now I know the price, the buyer and the day my money comes.
-          </blockquote>
-          <figcaption className="font-label text-label-lg text-on-accent-container">
-            Maria Nangolo <span className="font-body text-on-surface-variant">· butternut and onion farmer, Okahao</span>
-          </figcaption>
+    <section id="waitlist" className="scroll-mt-24 max-w-6xl mx-auto px-4 sm:px-8 pb-16 sm:pb-24">
+      <div className="clay-card bg-accent-container rounded-2xl p-5 sm:p-10 lg:p-12 grid lg:grid-cols-[1fr_1.15fr] gap-8 lg:gap-12">
+        <div className="flex flex-col gap-6">
+          <SectionHead
+            eyebrow="Join the waitlist"
+            title="Be first when FarmLine opens in your area"
+            body="We are opening region by region. Join now and we will contact you the week FarmLine reaches you."
+          />
+          <ol className="flex flex-col gap-4">
+            {[
+              ['how_to_reg', 'Join in one minute', 'A few quick questions: who you are, your phone number and your region.'],
+              ['sms', 'We contact you at launch', 'By SMS, or email if you prefer.'],
+              ['support_agent', 'An agent helps you start', 'Farmers get a visit from a local FarmLine agent to sign up.'],
+            ].map(([icon, title, body]) => (
+              <li key={title} className="flex gap-4">
+                <span className="w-11 h-11 rounded-full bg-surface-elevated text-primary flex items-center justify-center shrink-0 clay-btn-secondary">
+                  <Icon name={icon} size={22} />
+                </span>
+                <span className="flex flex-col">
+                  <span className="font-title text-title-md text-on-accent-container">{title}</span>
+                  <span className="font-body text-body-md text-on-surface-variant">{body}</span>
+                </span>
+              </li>
+            ))}
+          </ol>
+          <a
+            href={typeformUrl('landing_newtab')}
+            target="_blank"
+            rel="noreferrer"
+            className="font-label text-label-md text-primary underline underline-offset-4 w-fit inline-flex items-center gap-1"
+          >
+            Form not loading? Open it in a new tab <Icon name="open_in_new" size={16} />
+          </a>
         </div>
-      </figure>
+
+        <div className="clay-card bg-surface-card rounded-2xl overflow-hidden relative h-[560px] sm:h-[600px]">
+          {!loaded && (
+            <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 text-primary" aria-hidden="true">
+              <Icon name="progress_activity" size={32} className="animate-spin" />
+              <span className="font-label text-label-md">Loading the form…</span>
+            </div>
+          )}
+          <iframe
+            title="FarmLine waitlist form"
+            src={typeformUrl('landing')}
+            onLoad={() => setLoaded(true)}
+            loading="lazy"
+            allow="camera; microphone; autoplay; encrypted-media; fullscreen"
+            className={cx('w-full h-full border-0 transition-opacity duration-surface-enter', loaded ? 'opacity-100' : 'opacity-0')}
+          />
+        </div>
+      </div>
     </section>
   );
 }
 
 const LANDING_FAQS = [
+  ['When does FarmLine launch?', 'We are opening region by region, starting in the north. Join the waitlist and we will SMS or email you the week FarmLine reaches your area.'],
   ['What does it cost farmers?', 'Listing is free. FarmLine takes a small service fee from the buyer, so the price you see is the price you get.'],
   ['How and when do I get paid?', 'Straight to your mobile money wallet, as soon as your produce is collected and the quality check is done.'],
   ['What if my produce is graded lower?', 'Grade B produce is still bought at a lower, agreed price. If it is rejected, your agent explains why and it stays yours to sell elsewhere.'],
@@ -524,7 +579,7 @@ function Faq() {
   );
 }
 
-function FinalCta() {
+function FinalCta({ onJoin }) {
   return (
     <section className="max-w-6xl mx-auto px-4 sm:px-8 pb-16">
       <div className="clay-logo bg-primary rounded-2xl p-8 sm:p-14 flex flex-col lg:flex-row lg:items-center gap-8 relative overflow-hidden">
@@ -533,15 +588,23 @@ function FinalCta() {
           <h2 className="font-display text-headline-lg-mobile sm:text-[34px] sm:leading-[40px] font-extrabold text-on-primary text-balance">
             Your next harvest could already be sold.
           </h2>
-          <p className="font-body text-body-lg text-on-primary/80">Join in minutes, or ask your local FarmLine agent to sign you up.</p>
+          <p className="font-body text-body-lg text-on-primary/80">Join the waitlist today. It takes a minute and costs nothing.</p>
         </div>
         <div className="flex flex-col sm:flex-row gap-3 relative">
-          <Link to="/farmer/splash" className="press clay-btn-secondary bg-accent text-on-accent rounded-full h-14 px-7 inline-flex items-center justify-center gap-2 font-label text-[16px]">
-            Start selling
-          </Link>
-          <Link to="/buyer/signup" className="press bg-surface-elevated text-primary rounded-full h-14 px-7 inline-flex items-center justify-center gap-2 font-label text-[16px]">
-            Buy produce
-          </Link>
+          <button
+            type="button"
+            onClick={() => onJoin('farmer')}
+            className="press clay-btn-secondary bg-accent text-on-accent rounded-full h-14 px-7 inline-flex items-center justify-center gap-2 font-label text-[16px]"
+          >
+            I’m a farmer
+          </button>
+          <button
+            type="button"
+            onClick={() => onJoin('buyer')}
+            className="press bg-surface-elevated text-primary rounded-full h-14 px-7 inline-flex items-center justify-center gap-2 font-label text-[16px]"
+          >
+            I’m a buyer
+          </button>
         </div>
       </div>
     </section>
@@ -557,9 +620,9 @@ function Footer() {
           <p className="font-body text-body-md text-on-surface-variant max-w-xs">Namibia’s agri marketplace for farmers, field agents and buyers.</p>
         </div>
         {[
-          ['Farmers', [['Farmer app', '/farmer/splash'], ['SMS guide', '/farmer/help'], ['Market prices', '/farmer/prices']]],
-          ['Buyers', [['Create account', '/buyer/signup'], ['Log in', '/buyer/login'], ['Marketplace', '/buyer/marketplace']]],
-          ['FarmLine', [['Field agents', '/agent'], ['Ops admin', '/admin'], ['All screens', '/screens']]],
+          ['Preview: farmers', [['Farmer app', '/farmer/splash'], ['SMS guide', '/farmer/help'], ['Market prices', '/farmer/prices']]],
+          ['Preview: buyers', [['Buyer portal', '/buyer'], ['Sign up flow', '/buyer/signup'], ['Marketplace', '/buyer/marketplace']]],
+          ['Preview: FarmLine', [['Field agents', '/agent'], ['Ops admin', '/admin'], ['All screens', '/screens']]],
         ].map(([title, links]) => (
           <nav key={title} aria-label={title} className="flex flex-col gap-2">
             <p className="font-label text-label-md text-on-surface-variant uppercase tracking-[1px]">{title}</p>
@@ -577,19 +640,24 @@ function Footer() {
 }
 
 export default function Landing() {
+  // Every call-to-action scrolls to the embedded Typeform.
+  const join = () => {
+    document.getElementById('waitlist')?.scrollIntoView({ block: 'start' });
+  };
+
   return (
     <div className="min-h-screen overflow-x-clip">
-      <TopNav />
+      <TopNav onJoin={join} />
       <main>
-        <Hero />
+        <Hero onJoin={join} />
         <Stats />
         <HowItWorks />
-        <Farmers />
-        <Buyers />
+        <Farmers onJoin={join} />
+        <Buyers onJoin={join} />
         <Prices />
-        <Testimonial />
+        <Waitlist />
         <Faq />
-        <FinalCta />
+        <FinalCta onJoin={join} />
       </main>
       <Footer />
     </div>

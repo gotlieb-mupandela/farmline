@@ -6,7 +6,7 @@ Four apps share one demo state:
 
 | App | Start at | What it covers |
 | --- | --- | --- |
-| Landing page | `/` | Public marketing page |
+| Landing page | `/` | Pre-launch page with the waitlist sign-up |
 | Farmer app (mobile) | `/farmer/splash` | Onboarding, selling produce, orders, wallet, prices, SMS help |
 | Field agent (mobile) | `/agent` | Route, farmer registration, quality grading |
 | Buyer portal (web) | `/buyer/login` | Marketplace, requests, checkout, orders, deliveries, payments, team |
@@ -22,6 +22,10 @@ npm run dev
 ```
 
 Then open http://localhost:5173. `npm run build` creates a production build in `dist/`.
+
+## Waitlist (Typeform)
+
+The landing page embeds the "FarmLine waitlist" Typeform (form ID `YGOzE7WV`, set in `src/pages/Landing.jsx`). Edit questions and see sign-ups at https://admin.typeform.com/form/YGOzE7WV/create. Responses carry a hidden `source` field showing where on the site they came from.
 
 ## Notes
 
