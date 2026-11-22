@@ -50,9 +50,6 @@ function TopNav({ onJoin }) {
           ))}
         </nav>
         <div className="ml-auto hidden sm:flex items-center gap-2">
-          <Link to="/screens" className="btn-ghost px-4 h-11 text-label-lg">
-            Preview the app
-          </Link>
           <button type="button" onClick={() => onJoin()} className="btn-primary px-5 h-11">
             Join the waitlist
           </button>
@@ -76,10 +73,7 @@ function TopNav({ onJoin }) {
                 {label}
               </a>
             ))}
-            <div className="grid grid-cols-2 gap-2 pt-2 sm:hidden">
-              <Link to="/screens" className="btn-ghost h-12 text-label-lg">
-                Preview app
-              </Link>
+            <div className="grid gap-2 pt-2 sm:hidden">
               <button
                 type="button"
                 onClick={() => {
@@ -88,7 +82,7 @@ function TopNav({ onJoin }) {
                 }}
                 className="btn-primary h-12"
               >
-                Join waitlist
+                Join the waitlist
               </button>
             </div>
           </nav>
@@ -315,11 +309,7 @@ function Farmers({ onJoin }) {
         <div className="flex flex-wrap gap-3">
           <button type="button" onClick={() => onJoin('farmer')} className="btn-primary h-12 px-6">
             Join as a farmer <Icon name="arrow_forward" size={20} />
-          </button>
-          <Link to="/farmer/splash" className="btn-ghost h-12 px-5 text-label-lg">
-            <Icon name="smartphone" size={20} /> Preview the farmer app
-          </Link>
-        </div>
+          </button>        </div>
       </div>
 
       <div className="clay-card bg-surface-card rounded-2xl p-5 sm:p-7 max-w-md w-full mx-auto lg:mr-0">
@@ -383,11 +373,7 @@ function Buyers({ onJoin }) {
               className="press clay-btn-secondary bg-accent text-on-accent rounded-full h-12 px-6 inline-flex items-center gap-2 font-label text-label-lg"
             >
               Join as a buyer <Icon name="arrow_forward" size={20} />
-            </button>
-            <Link to="/buyer" className="press rounded-full h-12 px-6 inline-flex items-center gap-2 font-label text-label-lg text-on-primary border-2 border-on-primary/40 hover:border-on-primary">
-              Preview the buyer portal
-            </Link>
-          </div>
+            </button>          </div>
         </div>
 
         <div className="clay-card bg-surface-card rounded-2xl p-5 sm:p-7 flex flex-col gap-5 lg:order-1">
@@ -441,25 +427,16 @@ function Buyers({ onJoin }) {
 function Prices() {
   return (
     <section id="prices" className="scroll-mt-24 max-w-6xl mx-auto px-4 sm:px-8 py-16 sm:py-24 flex flex-col gap-10">
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
-        <SectionHead
-          eyebrow="Market prices"
-          title="Know the price before you plant"
-          body="Every week, farmers get prices like these for their crops, with tips on when to sell and plant."
-        />
-        <Link to="/farmer/prices" className="btn-ghost h-11 px-5 text-label-lg self-start sm:self-auto shrink-0">
-          Preview price insights <Icon name="arrow_forward" size={18} />
-        </Link>
-      </div>
+      <SectionHead
+        eyebrow="Market prices"
+        title="Know the price before you plant"
+        body="Every week, farmers get prices like these for their crops, with tips on when to sell and plant."
+      />
       <div className="grid md:grid-cols-3 gap-5">
         {Object.entries(PRICE_INSIGHTS).map(([crop, p]) => {
           const up = p.change >= 0;
           return (
-            <Link
-              key={crop}
-              to={`/farmer/prices?crop=${crop}`}
-              className="clay-card press bg-surface-card rounded-2xl p-6 flex flex-col gap-3"
-            >
+            <div key={crop} className="clay-card bg-surface-card rounded-2xl p-6 flex flex-col gap-3">
               <div className="flex items-center gap-3">
                 <Img src={CROPS[crop].image} alt="" fallbackIcon={CROPS[crop].icon} className="w-11 h-11 rounded-xl object-cover" />
                 <span className="font-headline text-title-lg">{CROPS[crop].name}</span>
@@ -477,7 +454,7 @@ function Prices() {
               <p className="font-display text-headline-lg text-primary tabular-nums">{perUnit(p.avg, 'kg', { decimals: 2 })}</p>
               <Sparkline values={p.series} label={`${CROPS[crop].name} price trend`} className="w-full h-16" />
               <p className="font-body text-label-md text-on-surface-variant">{p.tip}</p>
-            </Link>
+            </div>
           );
         })}
       </div>
@@ -614,25 +591,18 @@ function FinalCta({ onJoin }) {
 function Footer() {
   return (
     <footer className="border-t border-outline-variant/70">
-      <div className="max-w-6xl mx-auto px-4 sm:px-8 py-10 grid sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr] gap-8">
+      <div className="max-w-6xl mx-auto px-4 sm:px-8 py-10 flex flex-col sm:flex-row sm:items-start justify-between gap-8">
         <div className="flex flex-col gap-3">
           <Logo />
           <p className="font-body text-body-md text-on-surface-variant max-w-xs">Namibia’s agri marketplace for farmers, field agents and buyers.</p>
         </div>
-        {[
-          ['Preview: farmers', [['Farmer app', '/farmer/splash'], ['SMS guide', '/farmer/help'], ['Market prices', '/farmer/prices']]],
-          ['Preview: buyers', [['Buyer portal', '/buyer'], ['Sign up flow', '/buyer/signup'], ['Marketplace', '/buyer/marketplace']]],
-          ['Preview: FarmLine', [['Field agents', '/agent'], ['Ops admin', '/admin'], ['All screens', '/screens']]],
-        ].map(([title, links]) => (
-          <nav key={title} aria-label={title} className="flex flex-col gap-2">
-            <p className="font-label text-label-md text-on-surface-variant uppercase tracking-[1px]">{title}</p>
-            {links.map(([label, to]) => (
-              <Link key={to} to={to} className="font-label text-label-lg text-on-surface hover:text-primary w-fit">
-                {label}
-              </Link>
-            ))}
-          </nav>
-        ))}
+        <nav aria-label="Page sections" className="flex flex-wrap gap-x-6 gap-y-2">
+          {[...NAV, ['Join the waitlist', '#waitlist']].map(([label, href]) => (
+            <a key={href} href={href} className="font-label text-label-lg text-on-surface hover:text-primary">
+              {label}
+            </a>
+          ))}
+        </nav>
       </div>
       <p className="max-w-6xl mx-auto px-4 sm:px-8 pb-8 font-body text-label-md text-on-surface-variant">© 2026 FarmLine · Windhoek, Namibia</p>
     </footer>
